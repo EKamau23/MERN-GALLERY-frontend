@@ -77,23 +77,27 @@ function Gallery() {
     });
   
     axios
-      .post(`${API_BASE_URL}/api/gallery/upload/${selectedFolder}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        setUploadedFiles((prevFiles) => [
-          ...prevFiles,
-          ...response.data,
-        ]);
-        setFilesToUpload([]);
-        setPreviewUrls([]);
-      })
-      .catch((error) => {
-        console.error("Error uploading photos", error);
-      });
-  };
+  .post(`${API_BASE_URL}/api/gallery/upload/${selectedFolder}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  })
+  .then((response) => {
+    console.log('Upload response:', response);
+    setUploadedFiles((prevFiles) => [...prevFiles, ...response.data]);
+    setFilesToUpload([]);
+    setPreviewUrls([]);
+  })
+  .catch((error) => {
+    console.error("Error uploading photos:", error);
+    if (error.response) {
+      console.error("Response error:", error.response);
+    }
+    if (error.request) {
+      console.error("Request error:", error.request);
+    }
+    console.error("Error message:", error.message);
+  });
   
 
   const handleDeletePhoto = async (photoId) => {
