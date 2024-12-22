@@ -6,6 +6,9 @@ import { styled } from '@mui/system';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Get API base URL from environment variable
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const AnimatedBox = styled(Box)`
   animation: fadeIn 1s ease-in-out;
   @keyframes fadeIn {
@@ -36,7 +39,7 @@ const Register = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', payload);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, payload);
       console.log(response.data);
       toast.success('Registration successful!', {
         position: "top-center",

@@ -4,6 +4,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
+// Get API base URL from environment variable
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const AnimatedBox = styled(Box)`
   animation: fadeIn 1s ease-in-out;
   @keyframes fadeIn {
@@ -26,7 +29,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         email,
         password,
       });

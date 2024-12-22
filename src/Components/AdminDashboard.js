@@ -3,6 +3,8 @@ import axios from "axios";
 import { Container, Paper, Typography, Grid, TextField, Button, CircularProgress, Card, CardContent } from "@mui/material";
 import { Link } from "react-router-dom"; // Import Link component for navigation
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL; // Centralized API base URL
+
 function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({ username: "", email: "", password: "" });
@@ -12,7 +14,7 @@ function AdminDashboard() {
   // Fetch users from the backend
   const fetchUsers = () => {
     axios
-      .get("http://localhost:5000/api/admin/users")
+      .get(`${API_BASE_URL}/api/admin/users`)
       .then((response) => {
         setUsers(response.data);
       })
@@ -29,7 +31,7 @@ function AdminDashboard() {
   const handleAddUser = () => {
     setIsLoading(true); // Start loading
     axios
-      .post("http://localhost:5000/api/admin/add-user", newUser)
+      .post(`${API_BASE_URL}/api/admin/add-user`, newUser)
       .then((response) => {
         fetchUsers(); // Re-fetch users after adding a new user
         setNewUser({ username: "", email: "", password: "" }); // Reset the form
@@ -45,7 +47,7 @@ function AdminDashboard() {
   // Delete a user
   const handleDeleteUser = (userId) => {
     axios
-      .delete(`http://localhost:5000/api/admin/delete-user/${userId}`)
+      .delete(`${API_BASE_URL}/api/admin/delete-user/${userId}`)
       .then(() => {
         setUsers(users.filter((user) => user._id !== userId)); // Remove deleted user from the list
       })
@@ -57,7 +59,7 @@ function AdminDashboard() {
   // Change user password
   const handleChangePassword = () => {
     axios
-      .put(`http://localhost:5000/api/admin/change-password/${selectedUser.id}`, {
+      .put(`${API_BASE_URL}/api/admin/change-password/${selectedUser.id}`, {
         password: selectedUser.newPassword,
       })
       .then(() => {

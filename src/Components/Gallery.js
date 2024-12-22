@@ -15,9 +15,11 @@ function Gallery() {
   const [previewUrls, setPreviewUrls] = useState([]); // Changed to store multiple preview URLs
   const [fullImageUrl, setFullImageUrl] = useState(null);
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/gallery/folders")
+      .get(`${API_BASE_URL}/api/gallery/folders`)
       .then((response) => {
         setFolders(response.data);
       })
@@ -29,7 +31,7 @@ function Gallery() {
   const handleCreateFolder = () => {
     if (newFolderName.trim() === "") return;
     axios
-      .post("http://localhost:5000/api/gallery/create-folder", { name: newFolderName })
+      .post(`${API_BASE_URL}/api/gallery/create-folder`, { name: newFolderName })
       .then((response) => {
         setFolders([...folders, response.data]);
         setNewFolderName("");
@@ -42,7 +44,7 @@ function Gallery() {
   const handleFolderClick = (folderId) => {
     setSelectedFolder(folderId);
     axios
-      .get(`http://localhost:5000/api/gallery/folder/${folderId}/photos`)
+      .get(`${API_BASE_URL}/api/gallery/folder/${folderId}/photos`)
       .then((response) => {
         setUploadedFiles(response.data);
       })
@@ -75,7 +77,7 @@ function Gallery() {
     });
 
     axios
-      .post(`http://localhost:5000/api/gallery/upload/${selectedFolder}`, formData)
+      .post(`${API_BASE_URL}/api/gallery/upload/${selectedFolder}`, formData)
       .then((response) => {
         setUploadedFiles((prevFiles) => [
           ...prevFiles,
@@ -91,7 +93,7 @@ function Gallery() {
 
   const handleDeletePhoto = async (photoId) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/photos/photo/${photoId}`);
+      const response = await axios.delete(`${API_BASE_URL}/api/photos/photo/${photoId}`);
       setUploadedFiles(uploadedFiles.filter(file => file._id !== photoId));
     } catch (error) {
       console.error("Error deleting photo:", error.response?.data || error.message);
@@ -100,7 +102,7 @@ function Gallery() {
 
   const handleDownloadPhoto = (photoId) => {
     axios
-      .get(`http://localhost:5000/api/gallery/download/${photoId}`, { responseType: "blob" })
+      .get(`${API_BASE_URL}/api/gallery/download/${photoId}`, { responseType: "blob" })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
@@ -120,7 +122,7 @@ function Gallery() {
   };
 
   const handleImageClick = (url) => {
-    setFullImageUrl(`http://localhost:5000${url}`);
+    setFullImageUrl(`${API_BASE_URL}${url}`);
   };
 
   const closeFullImage = () => {
@@ -239,7 +241,7 @@ function Gallery() {
                   <Grid item xs={12} sm={6} md={4} key={file._id}>
                     <Paper sx={{ textAlign: "center", padding: 2 }}>
                       <img
-                        src={`http://localhost:5000${file.url}`}
+                        src={`${API_BASE_URL}${file.url}`}
                         alt={file.name}
                         style={{
                           width: "100%",
