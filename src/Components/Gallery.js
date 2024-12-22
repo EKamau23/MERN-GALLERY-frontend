@@ -55,6 +55,8 @@ function Gallery() {
 
   const handleFileChange = (e) => {
     const selectedFiles = e.target.files;
+    console.log("Selected Files:", selectedFiles);  // Log selected files to ensure they are properly captured
+
     // Restrict to a maximum of 30 files
     if (selectedFiles.length + filesToUpload.length <= 30) {
       setFilesToUpload((prevFiles) => [
@@ -75,30 +77,28 @@ function Gallery() {
     filesToUpload.forEach((file) => {
       formData.append("files", file);
     });
-  
+    
+    console.log("Uploading Files:", formData); // Log the FormData to ensure it's constructed properly
+    
     axios
-  .post(`${API_BASE_URL}/api/gallery/upload/${selectedFolder}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  })
-  .then((response) => {
-    console.log('Upload response:', response);
-    setUploadedFiles((prevFiles) => [...prevFiles, ...response.data]);
-    setFilesToUpload([]);
-    setPreviewUrls([]);
-  })
-  .catch((error) => {
-    console.error("Error uploading photos:", error);
-    if (error.response) {
-      console.error("Response error:", error.response);
-    }
-    if (error.request) {
-      console.error("Request error:", error.request);
-    }
-    console.error("Error message:", error.message);
-  });
-  
+      .post(`${API_BASE_URL}/api/gallery/upload/${selectedFolder}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log("Upload Success:", response.data);  // Log success response
+        setUploadedFiles((prevFiles) => [
+          ...prevFiles,
+          ...response.data,
+        ]);
+        setFilesToUpload([]); // Clear the files after successful upload
+        setPreviewUrls([]); // Clear preview URLs
+      })
+      .catch((error) => {
+        console.error("Error uploading photos", error.response?.data || error.message);  // Log error message
+      });
+  };
 
   const handleDeletePhoto = async (photoId) => {
     try {
