@@ -73,23 +73,28 @@ function Gallery() {
   const handleFileUpload = () => {
     const formData = new FormData();
     filesToUpload.forEach((file) => {
-      formData.append("files", file); // Append each file
+      formData.append("files", file);
     });
-
+  
     axios
-      .post(`${API_BASE_URL}/api/gallery/upload/${selectedFolder}`, formData)
+      .post(`${API_BASE_URL}/api/gallery/upload/${selectedFolder}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((response) => {
         setUploadedFiles((prevFiles) => [
           ...prevFiles,
-          ...response.data, // Add new files to the state
+          ...response.data,
         ]);
-        setFilesToUpload([]); // Clear the files to upload
-        setPreviewUrls([]); // Clear the previews
+        setFilesToUpload([]);
+        setPreviewUrls([]);
       })
       .catch((error) => {
         console.error("Error uploading photos", error);
       });
   };
+  
 
   const handleDeletePhoto = async (photoId) => {
     try {
